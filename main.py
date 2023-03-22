@@ -12,7 +12,7 @@ from typing import Dict, AnyStr
 
 NUM_SECRETS = 9936
 KST = timezone('Asia/Seoul')
-FIRST_DAY = date(2023, 3, 21)
+FIRST_DAY = date(2023, 3, 20)
 
 
 app = FastAPI()
@@ -39,7 +39,7 @@ for offset in range(-2, 2):
     app.nearests[puzzle_number] = get_nearest(puzzle_number, secret_word, valid_nearest_words, valid_nearest_vecs)
     #print(app.nearests[puzzle_number])
     
-@scheduler.scheduled_job(trigger=CronTrigger(hour=0, minute=0, timezone=KST))
+@scheduler.scheduled_job(trigger=CronTrigger(hour=1, minute=0, timezone=KST))
 def update_nearest():
     print("scheduled stuff triggered!")
     next_puzzle = ((utc.localize(datetime.utcnow()).astimezone(KST).date() - FIRST_DAY).days + 1) % NUM_SECRETS
@@ -70,10 +70,16 @@ def get_similarities() -> Dict[str, int]:
         "keyword": secret_word,
         "relativeItems": {}
     }
-    print (type(nearest_words))
-    print (nearest_words.values())
-    # for word, similarity in nearest_words:
+    
+    #print (type(nearest_words))
+    #print (nearest_words)
+    #print (nearest_words.values())
+    # for word in nearest_words:
     #     print(word = word, similarity = similarity)
     #     result["relativeItems"][word] = similarity
+    for word in nearest_words:
+        #print(word)
+        print(nearest_words[word][0])
+        result["relativeItems"][word] = round(nearest_words[word][1]*100,3)
     return JSONResponse(content=result)
 

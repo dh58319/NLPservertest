@@ -13,7 +13,25 @@ def most_similar(mat: array, idx: int, k: int) -> Tuple[array, array]:
     return top_idxs[dist_sort_args], dists[top_idxs][dist_sort_args]
 
 
-def dump_nearest(puzzle_num: int, word: str, words: List[str], mat: array, k: int = 20000) \
+# def dump_nearest(puzzle_num: int, word: str, words: List[str], mat: array, k: int = 1000) \
+#         -> Dict[str,float]:
+#     word_idx = words.index(word)
+#     sim_idxs, sim_dists = most_similar(mat, word_idx, k + 1)
+#     words_a = np.array(words)
+#     sort_args = np.argsort(sim_dists)[::-1]
+#     words_sorted = words_a[sim_idxs[sort_args]]
+#     dists_sorted = sim_dists[sort_args]
+#     result = zip(words_sorted, dists_sorted)
+#     closeness = dict()
+#     for (w, d) in enumerate(result):
+#         print(d)
+#         closeness[w] = d
+#     closeness[word] =  1.0
+#     with open(f'data/near/{puzzle_num}.dat', 'wb') as f:
+#         pickle.dump(closeness, f)
+#     return closeness
+
+def dump_nearest(puzzle_num: int, word: str, words: List[str], mat: array, k: int = 19882) \
         -> Dict[str, Tuple[str, float]]:
     word_idx = words.index(word)
     sim_idxs, sim_dists = most_similar(mat, word_idx, k + 1)
@@ -23,9 +41,9 @@ def dump_nearest(puzzle_num: int, word: str, words: List[str], mat: array, k: in
     dists_sorted = sim_dists[sort_args]
     result = zip(words_sorted, dists_sorted)
     closeness = dict()
-    for (w, d) in enumerate(result):
-        closeness[w] = d
-    closeness[word] =  1.0
+    for idx, (w, d) in enumerate(result):
+        closeness[w] = (idx, d)
+    closeness[word] = ("정답!", 1)
     with open(f'data/near/{puzzle_num}.dat', 'wb') as f:
         pickle.dump(closeness, f)
     return closeness

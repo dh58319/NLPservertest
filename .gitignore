@@ -1,2 +1,5 @@
 /data/cc.en.300.vec
 /__pycache__
+/data/near/
+/data/valid_guesses.db
+/data/valid_nearest.dat
